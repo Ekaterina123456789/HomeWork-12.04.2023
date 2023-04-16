@@ -10,7 +10,6 @@
 # программы — по команде пользователя). При старте
 # программы происходит загрузка списка сотрудников из
 # указанного пользователем файла.
-import re
 
 employees = {}
 with open('employees.txt', 'r', encoding='utf-8') as file:
@@ -18,9 +17,9 @@ with open('employees.txt', 'r', encoding='utf-8') as file:
     for line in lines:
         key, value = line.split(': ', 1)
         employees.update({key: value})
-    print(employees)
     keys = ['position', 'age', 'email', 'phone']
 while True:
+    print(" " * 10 + "*" * 20)
     command = input('1. Ввести данные сотрудника\n'
                     '2. Редактировать данные сотрудника\n'
                     '3. Найти сотрудника по фамилии\n'
@@ -58,7 +57,8 @@ while True:
             print('Такой сотрудник не зарегистрирован!')
     elif command == '5':
         for i in range(0, len(employees)):
-            print('{:20}'.format(*list(employees)[i:i + 3]) + '{:35}'.format(*list(employees.values())[i:i + 3]))
+            print('{:20}'.format(*list(employees)[i:i + 3]) + '{:135}'.format(*list(employees.values())[i:i + 3]))
+
     elif command == '6':
         age = input('Введите возраст сотрудника для поиска: ')
         for key, value in employees.items():
@@ -76,15 +76,23 @@ while True:
             if position in value:
                 print(key, value)
     elif command == '9':
-        with open('employees.txt', 'w') as file:
-            new_text = str(employees).replace('}', '}\n')
-            file.writelines(new_text)
+        text = str(employees)
+        strings = text.replace('"', '').replace('{{', '{').replace('}}}', '}}').replace("{'{", "{")\
+            .replace("': {", ": {").replace("}, '", "}, ").replace('}}, ', '}, ')
+        strings1 = strings.replace("}, ", "}\n")
+        with open('employees.txt', 'w', encoding='utf-8') as file_out:
+            file_out.writelines(strings1)
             print('Изменения сохранены')
     elif command == '0':
         save = input('Сохранить изменения? да (1), нет (0): ')
         if save == '1':
-            with open('employees.txt', 'w', encoding='utf-8') as file:
-                file.writelines(employees)
+            text = str(employees)
+            strings = text.replace('"', '').replace('{{', '{').replace('}}}', '}}').replace("{'{", "{")\
+                .replace("': {", ": {").replace("}, '", "}, ").replace('}}, ', '}, ')
+            strings1 = strings.replace("}, ", "}\n")
+            with open('employees.txt', 'w', encoding='utf-8') as file_out:
+                file_out.writelines(strings1)
+                print('Изменения сохранены')
                 print('Завершение работы')
                 break
         else:
